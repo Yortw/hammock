@@ -349,17 +349,28 @@ namespace Hammock.Web
             try
             {
                 var response = request.EndGetResponse(asyncResult);
-                using (response)
-                {
 #if SILVERLIGHT
                     if (DecompressionMethods == Silverlight.Compat.DecompressionMethods.GZip ||
                         DecompressionMethods == Silverlight.Compat.DecompressionMethods.Deflate ||
                         DecompressionMethods == (Silverlight.Compat.DecompressionMethods.GZip | Silverlight.Compat.DecompressionMethods.Deflate)
                         )
                     {
-                        response = new GzipHttpWebResponse((HttpWebResponse)response);
+												try
+												{
+													response = new GzipHttpWebResponse((HttpWebResponse)response);
+												}
+												catch
+												{
+													if (response != null)
+														response.Dispose();
+													
+													throw;
+												}
                     }
 #endif
+
+								using (response)
+                {
                     WebResponse = response;
                     
                     ContentStream = response.GetResponseStream();

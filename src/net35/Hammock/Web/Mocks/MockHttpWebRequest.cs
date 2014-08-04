@@ -22,10 +22,8 @@ namespace Hammock.Web.Mocks
 
 #if WindowsPhone 
         public long ContentLength { get; set; }
-#elif !SILVERLIGHT
+#else 
         public override long ContentLength { get; set; }
-#elif !WindowsPhone
-        public long ContentLength { get; set; }
 #endif
         public override string ContentType { get; set; }
 
