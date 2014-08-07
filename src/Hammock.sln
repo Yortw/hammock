@@ -24,9 +24,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock", "net40\Hammock\Ha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock.ClientProfile", "net40\Hammock.ClientProfile\Hammock.ClientProfile.csproj", "{487B7E3C-9689-47BC-8785-73CCD92A3749}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock.ClientProfile", "net35\Hammock.ClientProfile\Hammock.ClientProfile.csproj", "{73015806-7BE4-4BAB-AA07-ACC719EFE85A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock.ClientProfile", "net35\Hammock.ClientProfile\Hammock.Net35.csproj", "{73015806-7BE4-4BAB-AA07-ACC719EFE85A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock", "net20\Hammock\Hammock.csproj", "{80647B8C-E162-4E34-A758-590280F11B97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock", "net20\Hammock\Hammock.net20.csproj", "{80647B8C-E162-4E34-A758-590280F11B97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock.Silverlight", "net40\Hammock.Silverlight\Hammock.Silverlight.csproj", "{46AFFE9E-B0DF-4DE9-A1A3-1773E08DCB51}"
 EndProject
