@@ -2,10 +2,10 @@ using System;
 
 namespace Hammock.Authentication.OAuth
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class OAuthToken
+	public class OAuthToken
     {
         public virtual string Token { get; set; }
         public virtual string TokenSecret { get; set; }

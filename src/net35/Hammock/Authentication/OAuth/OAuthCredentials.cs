@@ -7,10 +7,10 @@ using Hammock.Silverlight.Compat;
 
 namespace Hammock.Authentication.OAuth
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class OAuthCredentials : IWebCredentials
+	public class OAuthCredentials : IWebCredentials
     {
         public virtual string ConsumerKey { get; set; }
         public virtual string ConsumerSecret { get; set; }

@@ -3,10 +3,10 @@ using System.Net;
 
 namespace Hammock.Retries
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class NetworkError : RetryErrorCondition
+	public class NetworkError : RetryErrorCondition
     {
         public override Predicate<Exception> RetryIf
         {
@@ -17,10 +17,10 @@ namespace Hammock.Retries
                                var we = (e as WebException);
 
                                return we != null && (we.Status != WebExceptionStatus.Success &&
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
                                       we.Status != WebExceptionStatus.ProtocolError &&
 #endif
-                                      we.Status != WebExceptionStatus.Pending);
+ we.Status != WebExceptionStatus.Pending);
                            };
             }
         }

@@ -2,10 +2,10 @@ using System;
 
 namespace Hammock.Attributes.Specialized
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class ParameterAttribute : Attribute, INamedAttribute
     {
         public ParameterAttribute(string name)

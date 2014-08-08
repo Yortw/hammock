@@ -3,10 +3,10 @@ using System.Text;
 
 namespace Hammock.Attributes.Specialized
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class EntityAttribute : Attribute
     {
         public EntityAttribute()

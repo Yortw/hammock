@@ -12,8 +12,11 @@ using Hammock.Extensions;
 using Hammock.Validation;
 using Hammock.Web.Mocks;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
+#endif
+
+#if SILVERLIGHT
 using System.IO.IsolatedStorage;
 #endif
 
@@ -62,7 +65,7 @@ namespace Hammock.Web
         public virtual WebQueryResult Result { get; internal set; }
         public virtual object UserState { get; internal set; }
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
         public virtual bool HasElevatedPermissions { get; set; }
 
         // [DC]: Headers to use when access isn't direct
@@ -70,7 +73,7 @@ namespace Hammock.Web
         public virtual string SilverlightAcceptEncodingHeader { get; set; }        
 #endif
         
-#if !Silverlight
+#if !Silverlight &&  !WINRT
         public virtual ServicePoint ServicePoint { get; set; }
         public virtual bool KeepAlive { get; set; }
         public virtual bool FollowRedirects { get; internal set; }
@@ -149,7 +152,11 @@ namespace Hammock.Web
         private void ParseTransforms(out IEnumerable<PropertyInfo> properties, 
                                      out IDictionary<string, string> transforms)
         {
+#if !WINRT
             properties = Info.GetType().GetProperties();
+#else
+					properties = Info.GetType().GetTypeInfo().DeclaredProperties;
+#endif
             transforms = new Dictionary<string, string>(0);
             Info.ParseValidationAttributes(properties, transforms);
         }
@@ -226,12 +233,12 @@ namespace Hammock.Web
         {
             Result.RequestDate = DateTime.UtcNow;
             Result.RequestUri = new Uri(e.Request);
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
             Result.RequestKeptAlive = KeepAlive;
 #endif
-        }
+				}
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         protected virtual void SetWebProxy(WebRequest request)
         {
 #if !Smartphone && !NETCF
@@ -279,10 +286,16 @@ namespace Hammock.Web
             SetMethod(method.ToString(), request);
 
             // It should be possible to override the content type in the case of AddPostContent
+#if !WINRT
             var hasContentType = Headers.AllKeys.Where(
                 key => key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase)
                 ).Count() > 0;
-            
+#else
+						var hasContentType = Headers.AllKeys.Where(
+								key => key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase)
+								).Count() > 0;
+#endif
+  
             if(!hasContentType)
             {
                 request.ContentType = "application/x-www-form-urlencoded";
@@ -295,10 +308,10 @@ namespace Hammock.Web
 #endif
             content = BuildPostOrPutContent(request, post);
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
             request.ContentLength = content.Length;
 #endif
-            return request;
+						return request;
         }
 
         protected virtual byte[] BuildPostOrPutContent(WebRequest request, string post)
@@ -346,12 +359,12 @@ namespace Hammock.Web
 #if TRACE
                 Trace.WriteLineIf(TraceEnabled, string.Concat("\r\n", entity));
 #endif
-                
-#if !SILVERLIGHT 
+
+#if !SILVERLIGHT && !WINRT 
                 // [DC]: This is set by Silverlight
                 request.ContentLength = content.Length;
 #endif
-            }
+						}
             else
             {
                 using(var ms = new MemoryStream())
@@ -409,7 +422,7 @@ namespace Hammock.Web
         {
             if (!UserAgent.IsNullOrBlank())
             {
-#if SILVERLIGHT && !WindowsPhone
+#if (SILVERLIGHT && !WindowsPhone) || WINRT
                 // [DC] User-Agent is still restricted in elevated mode
                 request.Headers[SilverlightUserAgentHeader ?? "X-User-Agent"] = UserAgent;
 #else
@@ -430,7 +443,7 @@ namespace Hammock.Web
             AppendHeaders(request);
             AppendCookies(request);
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
             if (ServicePoint != null)
             {
 #if !Smartphone  && !NETCF
@@ -445,30 +458,27 @@ namespace Hammock.Web
             }
 #endif
 
-#if !SILVERLIGHT
-            if (!Proxy.IsNullOrBlank())
+#if !SILVERLIGHT && !WINRT
+						if (!Proxy.IsNullOrBlank())
             {
                 SetWebProxy(request);
             }
             request.AllowAutoRedirect = FollowRedirects;
 #endif
 
-            SetUserAgent(request);
+						SetUserAgent(request);
 
             if (DecompressionMethods.HasValue)
             {
                 var decompressionMethods = DecompressionMethods.Value;
 
-#if !SILVERLIGHT && !WindowsPhone
+#if !SILVERLIGHT && !WindowsPhone && !WINRT
                 request.AutomaticDecompression = decompressionMethods;
 #else
 
-#if !WindowsPhone
-                if (HasElevatedPermissions)
-                {
-#endif
                 switch (decompressionMethods)
                 {
+#if SILVERLIGHT
                     case Silverlight.Compat.DecompressionMethods.GZip:
                         request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "gzip";
                         break;
@@ -478,30 +488,21 @@ namespace Hammock.Web
                     case Silverlight.Compat.DecompressionMethods.GZip | Silverlight.Compat.DecompressionMethods.Deflate:
                         request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "gzip,deflate";
                         break;
-                }
-
-#if !WindowsPhone
-                }
-                else
-                {
-                    switch (decompressionMethods)
-                    {
-                        case Silverlight.Compat.DecompressionMethods.GZip:
-                            request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "gzip";
-                            break;
-                        case Silverlight.Compat.DecompressionMethods.Deflate:
-                            request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "deflate";
-                            break;
-                        case Silverlight.Compat.DecompressionMethods.GZip | Silverlight.Compat.DecompressionMethods.Deflate:
-                            request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "gzip,deflate";
-                            break;
-                    }
-                }
+#else
+									case System.Net.DecompressionMethods.GZip:
+                        request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "gzip";
+                        break;
+                    case System.Net.DecompressionMethods.Deflate:
+                        request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "deflate";
+                        break;
+										case System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate:
+                        request.Headers[SilverlightAcceptEncodingHeader ?? "X-Accept-Encoding"] = "gzip,deflate";
+                        break;
 #endif
-
+								}
 #endif
-            }
-#if !SILVERLIGHT
+						}
+#if !SILVERLIGHT && !WINRT
             if (RequestTimeout.HasValue)
             {
                 // [DC] Need to synchronize these as Timeout is ignored in async requests
@@ -514,7 +515,7 @@ namespace Hammock.Web
                 request.KeepAlive = true;
             }
 #endif
-        }
+				}
 
         private void AppendCookies(HttpWebRequest request)
         {
@@ -542,14 +543,14 @@ namespace Hammock.Web
                     if (cookie.Domain != null)
                     {
                         cookieContainer.Add(cookie.Domain, value);
-                    }
-#if !SILVERLIGHT
+										}
+#if !SILVERLIGHT && !WINRT
                     else
                     {
                         request.CookieContainer.Add(value);
                     }
 #endif
-                }
+								}
 
                 if (cookieContainer.Count > 0)
                 {
@@ -637,15 +638,15 @@ namespace Hammock.Web
 #endif
 
         private static void AddHeader(KeyValuePair<string, string> header, WebRequest request)
-        {
-#if !SILVERLIGHT
+				{
+#if !SILVERLIGHT && !WINRT
             request.Headers.Add(header.Key, header.Value);
 #else
-            request.Headers[header.Key] = header.Value;
+					request.Headers[header.Key] = header.Value;
 #endif
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         private readonly IDictionary<string, Action<HttpWebRequest, string>> _restrictedHeaderActions
             = new Dictionary<string, Action<HttpWebRequest, string>>(StringComparer.OrdinalIgnoreCase)
                   {
@@ -663,7 +664,7 @@ namespace Hammock.Web
                       {"User-Agent", (r, v) => r.UserAgent = v }
                   };
 #else
-        private readonly IDictionary<string, Action<HttpWebRequest, string>> _restrictedHeaderActions
+				private readonly IDictionary<string, Action<HttpWebRequest, string>> _restrictedHeaderActions
             = new Dictionary<string, Action<HttpWebRequest, string>>(StringComparer.OrdinalIgnoreCase) {
                       { "Accept",            (r, v) => r.Accept = v },
                       { "Connection",        (r, v) => { /* Set by Silverlight */ }},           
@@ -898,7 +899,7 @@ namespace Hammock.Web
             }
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         protected virtual void ExecuteGetDeleteHeadOptions(GetDeleteHeadOptions method, string url, string key, ICache cache, out WebException exception)
         {
             WebException ex = null;
@@ -970,9 +971,9 @@ namespace Hammock.Web
                 cache.Insert(CreateCacheKey(key, url), ContentStream, slidingExpiration);
             }
         }
-#endif  
+#endif
 
-        public virtual event EventHandler<WebQueryRequestEventArgs> QueryRequest;
+				public virtual event EventHandler<WebQueryRequestEventArgs> QueryRequest;
         public virtual void OnQueryRequest(WebQueryRequestEventArgs args)
         {
             var handler = QueryRequest;
@@ -1001,7 +1002,7 @@ namespace Hammock.Web
                 handler(this, args);
             }
         }
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         protected virtual void ExecuteGetDeleteHeadOptions(GetDeleteHeadOptions method, string url, out WebException exception)
         {
             WebResponse = null;
@@ -1041,7 +1042,7 @@ namespace Hammock.Web
         }
         
 #endif
-        protected virtual WebRequest BuildMultiPartFormRequest(PostOrPut method, string url, IEnumerable<HttpPostParameter> parameters, out string boundary)
+				protected virtual WebRequest BuildMultiPartFormRequest(PostOrPut method, string url, IEnumerable<HttpPostParameter> parameters, out string boundary)
         {
             url = BeforeBuildPostOrPutEntityWebRequest()(url);
 
@@ -1071,7 +1072,7 @@ namespace Hammock.Web
             }
 
             var version = request is HttpWebRequest ?
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
                 "HTTP/v1.1" :
 #else
                 string.Concat("HTTP/", ((HttpWebRequest)request).ProtocolVersion) :
@@ -1094,7 +1095,7 @@ namespace Hammock.Web
         }
 #endif
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         protected virtual void ExecutePostOrPut(PostOrPut method, string url, out WebException exception)
         {
             WebResponse = null;
@@ -1205,7 +1206,7 @@ namespace Hammock.Web
         }
 #endif
 
-        private static int Write(bool write, Encoding encoding, Stream requestStream, string input)
+				private static int Write(bool write, Encoding encoding, Stream requestStream, string input)
         {
             var dataBytes = encoding.GetBytes(input);
             if(write)
@@ -1266,10 +1267,24 @@ namespace Hammock.Web
                             }
 #endif
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
                             fs = parameter.FileStream ?? new FileStream(parameter.FilePath, FileMode.Open, FileAccess.Read);
+#elif WINRT													
+													//Waiting on the tasks isn't cool, but making this method async for just one platform
+													//is too hard for now. The WP7 version is effectively synchronous anyway, so WinRT can
+													//be for now anyway.
+													if (parameter.FileStream == null)
+														{
+															var fileTask = Windows.Storage.StorageFile.GetFileFromPathAsync(parameter.FilePath).AsTask();
+															fileTask.Wait();
+															var rtStreamTask = fileTask.Result.OpenReadAsync().AsTask();
+															rtStreamTask.Wait();
+															parameter.FileStream = rtStreamTask.Result.AsStreamForRead();
+														}
+
+														fs = parameter.FileStream; // <-- WP7 requires a stream
 #else
-                            if (parameter.FileStream == null)
+														if (parameter.FileStream == null)
                             {
                                 var store = IsolatedStorageFile.GetUserStoreForApplication();
                                 var stream = store.OpenFile(parameter.FilePath, FileMode.Open, FileAccess.Read);
@@ -1339,7 +1354,7 @@ namespace Hammock.Web
             if(write)
             {
                 requestStream.Flush();
-                requestStream.Close();
+                requestStream.Dispose();
                 if (fs != null)
                 {
                     fs.Dispose();
@@ -1349,7 +1364,7 @@ namespace Hammock.Web
             return written;
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         public virtual void Request(string url, out WebException exception)
         {
             switch (Method)
@@ -1475,7 +1490,7 @@ namespace Hammock.Web
 #endif
 
 #if !WindowsPhone
-        public virtual WebQueryAsyncResult RequestAsync(string url, object userState)
+				public virtual WebQueryAsyncResult RequestAsync(string url, object userState)
         {
             UserState = userState;
 
@@ -1758,7 +1773,7 @@ namespace Hammock.Web
         }
 #endif
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         public virtual void ExecutePostOrPut(PostOrPut method, 
                                                string url, 
                                                string key, 
@@ -1826,7 +1841,7 @@ namespace Hammock.Web
         }
 #endif
 
-        public void Dispose()
+				public void Dispose()
         {
             if(ContentStream != null)
             {

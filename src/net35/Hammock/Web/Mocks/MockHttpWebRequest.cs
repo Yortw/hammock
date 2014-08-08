@@ -4,10 +4,10 @@ using System.Net;
 
 namespace Hammock.Web.Mocks
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class MockHttpWebRequest : WebRequest
+	public class MockHttpWebRequest : WebRequest
     {
         private readonly Uri _requestUri;
 
@@ -20,7 +20,7 @@ namespace Hammock.Web.Mocks
         
         public virtual string Content { get; set; }
 
-#if WindowsPhone 
+#if WindowsPhone || WINRT
         public long ContentLength { get; set; }
 #else 
         public override long ContentLength { get; set; }
@@ -39,7 +39,7 @@ namespace Hammock.Web.Mocks
             ExpectHeaders = new WebHeaderCollection();
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         public override WebResponse GetResponse()
         {
             return CreateResponse();
@@ -67,13 +67,13 @@ namespace Hammock.Web.Mocks
             return response;
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         public override Stream GetRequestStream()
         {
             return new MemoryStream();
         }
 #endif
-        public override IAsyncResult BeginGetRequestStream(AsyncCallback callback, object state)
+				public override IAsyncResult BeginGetRequestStream(AsyncCallback callback, object state)
         {
             // [DC]: Mock POSTs never write to the request
             return BeginGetResponse(callback, state);
@@ -117,9 +117,9 @@ namespace Hammock.Web.Mocks
         public override Uri RequestUri
         {
             get { return _requestUri; }
-        }
+				}
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         public override int Timeout
         {
             get
@@ -129,5 +129,5 @@ namespace Hammock.Web.Mocks
         }
 #endif
 
-    }
+		}
 }

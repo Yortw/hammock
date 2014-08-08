@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Hammock.Web;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
+using System.Collections;
 #else
 using System.Collections.Specialized;
 #endif
@@ -38,7 +39,7 @@ namespace Hammock.Extensions
             return dictionary.ContainsKey(key) ? dictionary[key] : default(K);
         }
 
-        public static IEnumerable<T> ToEnumerable<T>(this object[] items) where T : class
+        public static IEnumerable<T> ToEnumerable<T>(this System.Collections.IEnumerable items) where T : class
         {
             foreach (var item in items)
             {

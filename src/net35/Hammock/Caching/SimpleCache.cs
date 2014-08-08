@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Hammock.Caching
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class SimpleCache : ICache
+	public class SimpleCache : ICache
     {
         private const string NotSupportedMessage = "This simple cache does not support expiration.";
 

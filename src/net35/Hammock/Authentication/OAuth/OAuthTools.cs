@@ -7,14 +7,16 @@ using Hammock.Web;
 
 #if NETCF
 using Hammock.Security.Cryptography;
+#elif WINRT
+using Hammock.WinRT.Compat;
 #endif
 
 namespace Hammock.Authentication.OAuth
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public static class OAuthTools
+	public static class OAuthTools
     {
         private const string AlphaNumeric = Upper + Lower + Digit;
         private const string Digit = "1234567890";
@@ -25,19 +27,19 @@ namespace Hammock.Authentication.OAuth
         private static readonly Random _random;
         private static readonly object _randomLock = new object();
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         private static readonly RandomNumberGenerator _rng =
             RandomNumberGenerator.Create();
 #endif
 
         static OAuthTools()
-        {
-#if !SILVERLIGHT
+				{
+#if !SILVERLIGHT && !WINRT
             var bytes = new byte[4];
             _rng.GetNonZeroBytes(bytes);
             _random = new Random(BitConverter.ToInt32(bytes, 0));
 #else
-            _random = new Random();
+					_random = new Random();
 #endif
         }
 

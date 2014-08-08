@@ -4,10 +4,10 @@ using Hammock.Web;
 
 namespace Hammock.Authentication.OAuth
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class OAuthWebQueryInfo : IWebQueryInfo
+	public class OAuthWebQueryInfo : IWebQueryInfo
     {
         [Parameter("oauth_consumer_key")]
         public virtual string ConsumerKey { get; set; }

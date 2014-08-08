@@ -12,15 +12,15 @@ using System.Xml.Linq;
 
 namespace Hammock.Serialization
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class HammockDataContractSerializer : Utf8Serializer, ISerializer, IDeserializer
+	public class HammockDataContractSerializer : Utf8Serializer, ISerializer, IDeserializer
     {
         private readonly Dictionary<RuntimeTypeHandle, DataContractSerializer> _serializers =
             new Dictionary<RuntimeTypeHandle, DataContractSerializer>();
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         [NonSerialized]
 #endif
         private readonly XmlWriterSettings _settings;

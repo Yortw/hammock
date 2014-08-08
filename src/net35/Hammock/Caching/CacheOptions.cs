@@ -2,10 +2,10 @@
 
 namespace Hammock.Caching
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class CacheOptions
+	public class CacheOptions
     {
         public virtual CacheMode Mode { get; set; }
         public virtual TimeSpan Duration { get; set; }

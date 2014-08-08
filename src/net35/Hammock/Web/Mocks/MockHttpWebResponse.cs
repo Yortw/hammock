@@ -6,10 +6,10 @@ using Hammock.Extensions;
 
 namespace Hammock.Web.Mocks
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class MockHttpWebResponse : WebResponse
+	public class MockHttpWebResponse : WebResponse
     {
         private readonly Uri _requestUri;
         private readonly string _contentType;
@@ -18,9 +18,9 @@ namespace Hammock.Web.Mocks
         public virtual HttpStatusCode StatusCode { get; protected internal set; }
         public virtual string StatusDescription { get; protected internal set; }
 
-        protected internal WebHeaderCollection MockHeaders { get; set; } 
+        protected internal WebHeaderCollection MockHeaders { get; set; }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT  && !WINRT
         public override System.Net.WebHeaderCollection Headers
         {
             get
@@ -35,7 +35,7 @@ namespace Hammock.Web.Mocks
         }
 #endif
 
-        public override Stream GetResponseStream()
+				public override Stream GetResponseStream()
         {
             if(Content.IsNullOrBlank())
             {
@@ -47,10 +47,12 @@ namespace Hammock.Web.Mocks
             return stream;
         }
 
+#if !WINRT
         public override void Close()
         {
             
         }
+#endif
 
         public override long ContentLength
         {

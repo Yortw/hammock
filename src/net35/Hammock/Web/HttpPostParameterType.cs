@@ -3,10 +3,10 @@ using System.Runtime.Serialization;
 
 namespace Hammock.Web
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public enum HttpPostParameterType
+	public enum HttpPostParameterType
     {
 #if !SILVERLIGHT && !Smartphone && !ClientProfiles && !NET20 && !MonoTouch && !NETCF
         [EnumMember] Field,

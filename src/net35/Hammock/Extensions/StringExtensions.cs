@@ -12,7 +12,7 @@ using System.Windows.Browser;
 using System.Web;
 #endif
 
-#if !SILVERLIGHT && !MonoTouch && !NETCF
+#if !SILVERLIGHT && !MonoTouch && !NETCF && !WINRT
 using System.Web;
 #endif
 
@@ -28,7 +28,11 @@ namespace Hammock.Extensions
 
         public static bool EqualsIgnoreCase(this string left, string right)
         {
+#if !WINRT
             return String.Compare(left, right, StringComparison.InvariantCultureIgnoreCase) == 0;
+#else
+					return String.Compare(left, right, StringComparison.OrdinalIgnoreCase) == 0;
+#endif
         }
 
         public static bool EqualsAny(this string input, params string[] args)
@@ -129,7 +133,7 @@ namespace Hammock.Extensions
         }
 
         private const RegexOptions Options =
-#if !SILVERLIGHT && !MonoTouch
+#if !SILVERLIGHT && !MonoTouch && !WINRT
             RegexOptions.Compiled | RegexOptions.IgnoreCase;
 #else
             RegexOptions.IgnoreCase;

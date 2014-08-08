@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
 using System.Collections.Specialized;
 #else
 using Hammock.Silverlight.Compat;

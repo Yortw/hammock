@@ -2,19 +2,19 @@ using System;
 
 namespace Hammock.Caching
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public static class CacheFactory
-    {
-#if !Smartphone && !Silverlight && !ClientProfiles && !MonoTouch && !NETCF
+	public static class CacheFactory
+	{
+#if !Smartphone && !Silverlight && !ClientProfiles && !MonoTouch && !NETCF && !WINRT
         public static IDependencyCache AspNetCache
         {
             get { return new AspNetCache(); }
         }
 #endif
 
-        public static ICache InMemoryCache
+		public static ICache InMemoryCache
         {
             get { return new SimpleCache(); }
         }

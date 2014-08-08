@@ -13,7 +13,7 @@ using Hammock.Tasks;
 using Hammock.Web;
 using Hammock.Streaming;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
 #else
 using System.Collections.Specialized;
@@ -21,10 +21,10 @@ using System.Collections.Specialized;
 
 namespace Hammock
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public enum QueryHandling
+	public enum QueryHandling
     {
         /// <summary>
         /// Query strings present in paths are left alone.
@@ -38,10 +38,10 @@ namespace Hammock
         AppendToParameters
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public abstract class RestBase : PropertyChangedBase
+		public abstract class RestBase : PropertyChangedBase
     {
         private byte[] _postContent;
         private TaskOptions _taskOptions;
@@ -100,7 +100,7 @@ namespace Hammock
             PostParameters = new List<HttpPostParameter>(0);
         }
 
-#if !Silverlight
+#if !Silverlight && !WINRT
         public virtual ServicePoint ServicePoint { get; set; }
         public virtual bool? FollowRedirects { get; set; }
 #endif

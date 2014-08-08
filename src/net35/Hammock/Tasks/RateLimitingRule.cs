@@ -2,10 +2,10 @@ using System;
 
 namespace Hammock.Tasks
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class RateLimitingRule<T> : IRateLimitingRule<T>
+	public class RateLimitingRule<T> : IRateLimitingRule<T>
     {
         private readonly RateLimitType _rateLimitType;
 

@@ -5,10 +5,10 @@ using Hammock.Validation;
 
 namespace Hammock.Attributes.Validation
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class SpecificationAttribute : ValidationAttribute
+	public class SpecificationAttribute : ValidationAttribute
     {
         public SpecificationAttribute(Type specificationType)
         {

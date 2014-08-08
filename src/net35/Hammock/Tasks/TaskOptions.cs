@@ -4,10 +4,10 @@ namespace Hammock.Tasks
 {
 
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class TaskOptions<T> : TaskOptions, ITaskOptions<T>
+	public class TaskOptions<T> : TaskOptions, ITaskOptions<T>
     {
         private RateLimitType _rateLimitType = RateLimitType.ByPredicate;
         private double? _rateLimitPercent; 
@@ -33,10 +33,10 @@ namespace Hammock.Tasks
         }
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class TaskOptions : ITaskOptions
+	public class TaskOptions : ITaskOptions
     {
         public virtual TimeSpan DueTime { get; set; }
         public virtual int RepeatTimes { get; set; }

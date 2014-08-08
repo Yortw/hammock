@@ -7,10 +7,10 @@ namespace Hammock.Web
 #if !Smartphone && !NETCF
     [DebuggerDisplay("{Name}:{Value}")]
 #endif
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
   [Serializable]
 #endif
-    public class WebParameter : WebPair
+	public class WebParameter : WebPair
     {
         public WebParameter(string name, string value) : base(name, value)
         {

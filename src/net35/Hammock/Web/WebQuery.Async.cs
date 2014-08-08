@@ -9,7 +9,7 @@ using System.Threading;
 using Hammock.Caching;
 using Hammock.Extensions;
 using Hammock.Web.Mocks;
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
 #endif
 namespace Hammock.Web
@@ -200,7 +200,7 @@ namespace Hammock.Web
                 this.timer = new Timer(TimerTimedOut, state, timeout, Timeout.Infinite);
 #endif
 
-#if !Smartphone && !WindowsPhone && !SL4 && !NETCF
+#if !Smartphone && !WindowsPhone && !SL4 && !NETCF && !WINRT
             // [DC] request.Timeout is ignored with async
             
             var isPost = result is WebQueryAsyncResult;
@@ -341,7 +341,9 @@ namespace Hammock.Web
             Interlocked.Increment(ref completed);
 #endif
 
+#if !WINRT
             Console.Out.WriteLine("----- WebQuery.Async.cs GetAsyncResponseCallback");
+#endif
 
             object store;
             var request = GetAsyncCacheStore(asyncResult, out store);
@@ -528,7 +530,6 @@ namespace Hammock.Web
             {
                 if (stream != null)
                 {
-                    stream.Close();
                     stream.Dispose();
                 }
 
@@ -646,7 +647,9 @@ namespace Hammock.Web
                     stream.Write(content, 0, content.Length);
                     stream.Flush();
                 }
+#if !WINRT
                 stream.Close();
+#endif
 
                 request.BeginGetResponse(AsyncStreamCallback,
                                          new Pair<WebRequest, Pair<TimeSpan, int>>
@@ -795,7 +798,7 @@ namespace Hammock.Web
                 stream.Write(post, 0, post.Length);
                 stream.Flush();
             }
-            stream.Close();
+            stream.Dispose();
 #if TRACE
             var encoding = Encoding ?? new UTF8Encoding();
             if (post != null)
@@ -1300,7 +1303,7 @@ namespace Hammock.Web
                 return null;
             }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
             version = string.Concat("HTTP/", httpWebResponse.ProtocolVersion);
 #else
             version = "HTTP/1.1";

@@ -9,18 +9,21 @@ using System.Dynamic;
 
 namespace Hammock.Serialization
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class HammockXmlSerializer : Utf8Serializer, ISerializer, IDeserializer
+	public class HammockXmlSerializer : Utf8Serializer, ISerializer, IDeserializer
     {
         private readonly Dictionary<RuntimeTypeHandle, XmlSerializer> _serializers =
            new Dictionary<RuntimeTypeHandle, XmlSerializer>();
-
+#if !WINRT
         [NonSerialized]
+#endif
         private readonly XmlWriterSettings _settings;
 
+#if !WINRT
         [NonSerialized]
+#endif
         private readonly XmlSerializerNamespaces _namespaces;
 
         public HammockXmlSerializer(XmlWriterSettings settings)
@@ -52,12 +55,12 @@ namespace Hammock.Serialization
                     {
                         serializer.Serialize(writer, instance);
                     }
-                }
+								}
 
-#if !Smartphone && !NETCF
+#if !Smartphone && !NETCF && !WINRT
                 result = ContentEncoding.GetString(stream.ToArray());
 #else
-                result = ContentEncoding.GetString(stream.ToArray(), 0, (int)stream.Length);
+								result = ContentEncoding.GetString(stream.ToArray(), 0, (int)stream.Length);
 #endif
             }
             return result;

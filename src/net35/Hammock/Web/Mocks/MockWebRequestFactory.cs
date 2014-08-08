@@ -3,14 +3,14 @@ using System.Net;
 using System.Linq;
 using Hammock.Extensions;
 
-#if !SILVERLIGHT && !ClientProfiles && !MonoTouch
+#if !SILVERLIGHT && !ClientProfiles && !MonoTouch && !WINRT
 #if !NETCF
 using System.Web;
 #endif
 using System.Collections.Specialized;
 #endif
 
-#if Silverlight
+#if Silverlight || WINRT
 using Hammock.Silverlight.Compat;
 #endif
 
@@ -41,11 +41,11 @@ namespace Hammock.Web.Mocks
         public const string MockHttpMethod = "mockHttpMethod";
 
         public WebRequest Create(Uri uri)
-        {
-#if !SILVERLIGHT && !MonoTouch && !NETCF
+				{
+#if !SILVERLIGHT && !MonoTouch && !NETCF && !WINRT
             var query = HttpUtility.ParseQueryString(uri.Query);
 #else
-          var query = uri.Query.ParseQueryString();
+					var query = uri.Query.ParseQueryString();
 #endif
             var scheme = query[MockScheme];
             var statusCode = query[MockStatusCode];
@@ -57,7 +57,7 @@ namespace Hammock.Web.Mocks
 
             // Remove mocks parameters
             var queryString = new NameValueCollection();
-#if !SILVERLIGHT && !MonoTouch && !NETCF
+#if !SILVERLIGHT && !MonoTouch && !NETCF && !WINRT
             foreach(var key in query.AllKeys)
 #else
             foreach (var key in query.Keys)

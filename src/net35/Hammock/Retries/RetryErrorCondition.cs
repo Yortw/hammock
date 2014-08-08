@@ -2,10 +2,10 @@
 
 namespace Hammock.Retries
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public abstract class RetryErrorCondition : IRetryCondition<Exception>
+	public abstract class RetryErrorCondition : IRetryCondition<Exception>
     {
         public virtual Predicate<Exception> RetryIf
         {

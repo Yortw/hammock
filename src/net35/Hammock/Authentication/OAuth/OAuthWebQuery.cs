@@ -8,16 +8,16 @@ using Hammock.Caching;
 using Hammock.Extensions;
 using Hammock.Web;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
 #endif
 
 namespace Hammock.Authentication.OAuth
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class OAuthWebQuery : WebQuery
+	public class OAuthWebQuery : WebQuery
     {
         public virtual string Realm { get; set; }
         public virtual OAuthParameterHandling ParameterHandling { get; private set; }
@@ -274,8 +274,8 @@ namespace Hammock.Authentication.OAuth
             var authorization = sb.ToString();
             return authorization;
         }
-       
-#if !SILVERLIGHT
+
+#if !SILVERLIGHT && !WINRT
         public override void Request(string url, IEnumerable<HttpPostParameter> parameters, out WebException exception)
         {
             RecalculateProtectedResourceSignature(url);
@@ -309,7 +309,7 @@ namespace Hammock.Authentication.OAuth
 #endif
 
 #if !WindowsPhone
-        public override WebQueryAsyncResult RequestAsync(string url, IEnumerable<HttpPostParameter> parameters, object userState)
+				public override WebQueryAsyncResult RequestAsync(string url, IEnumerable<HttpPostParameter> parameters, object userState)
         {
             RecalculateProtectedResourceSignature(url);
             return base.RequestAsync(url, parameters, userState);

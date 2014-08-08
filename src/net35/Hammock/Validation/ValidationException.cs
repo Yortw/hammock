@@ -2,7 +2,7 @@
 
 namespace Hammock.Validation
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
     public class ValidationException : Exception

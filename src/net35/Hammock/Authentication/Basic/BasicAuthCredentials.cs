@@ -4,10 +4,10 @@ using Hammock.Web;
 
 namespace Hammock.Authentication.Basic
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class BasicAuthCredentials : IWebCredentials
+	public class BasicAuthCredentials : IWebCredentials
     {
         public virtual string Username { get; set; }
         public virtual string Password { get; set; }

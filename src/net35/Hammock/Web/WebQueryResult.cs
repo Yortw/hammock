@@ -4,10 +4,10 @@ using System.Net;
 
 namespace Hammock.Web
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class WebQueryResult
+	public class WebQueryResult
     {
         public virtual Stream ContentStream { get; set; }
 

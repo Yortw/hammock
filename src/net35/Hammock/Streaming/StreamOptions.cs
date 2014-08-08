@@ -2,10 +2,10 @@
 
 namespace Hammock.Streaming
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class StreamOptions
+	public class StreamOptions
     {
         public virtual TimeSpan? Duration { get; set; }
         public virtual int? ResultsPerCallback { get; set; }

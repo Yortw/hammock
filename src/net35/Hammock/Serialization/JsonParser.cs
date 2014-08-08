@@ -154,7 +154,7 @@ namespace Hammock.Serialization
 #if !NETCF
         private const NumberStyles JsonNumbers = NumberStyles.Float;
 #endif
-        private static readonly IDictionary<Type, PropertyInfo[]> _cache;
+        private static readonly IDictionary<Type, IEnumerable<PropertyInfo>> _cache;
 
         private static readonly char[] _base16 = new[]
                              {
@@ -166,7 +166,7 @@ namespace Hammock.Serialization
 
         static JsonParser()
         {
-            _cache = new Dictionary<Type, PropertyInfo[]>(0);
+            _cache = new Dictionary<Type, IEnumerable<PropertyInfo>>(0);
         }
 
         public static string Serialize<T>(T instance)
@@ -402,10 +402,13 @@ namespace Hammock.Serialization
                 return;
             }
 
+#if !WINRT
             var properties = item.GetProperties(
                 BindingFlags.Public | BindingFlags.Instance
                 );
-
+#else
+						var properties = item.GetTypeInfo().DeclaredProperties;
+#endif
             _cache.Add(item, properties);
         }
 

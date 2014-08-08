@@ -4,11 +4,11 @@ using Hammock.Web;
 
 namespace Hammock.Authentication.Windows
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
   [Serializable]
 #endif
 
-  public class WindowsAuthCredentials : IWebCredentials
+	public class WindowsAuthCredentials : IWebCredentials
   {
     private readonly ICredentials _credentials;
     public WindowsAuthCredentials(ICredentials credentials)

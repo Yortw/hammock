@@ -3,10 +3,10 @@ using System.Reflection;
 
 namespace Hammock.Attributes.Validation
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class BooleanToIntegerAttribute : ValidationAttribute
+	public class BooleanToIntegerAttribute : ValidationAttribute
     {
         public override string TransformValue(PropertyInfo property, object value)
       {

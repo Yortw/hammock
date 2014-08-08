@@ -3,10 +3,10 @@ using System.Text;
 
 namespace Hammock.Serialization
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class Utf8Serializer
+	public class Utf8Serializer
     {
         public virtual Encoding ContentEncoding
         {

@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
+#if !WINRT
 using System.Web;
+#endif
 
-#if !ClientProfiles
+#if !ClientProfiles && !WINRT
 using System.Web.Caching;
 #endif
 
 namespace Hammock.Caching
 {
 #if !ClientProfiles
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class AspNetCache : IDependencyCache
+	public class AspNetCache : IDependencyCache
     {
         #region IDependencyCache Members
 

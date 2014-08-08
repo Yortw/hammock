@@ -2,10 +2,10 @@
 
 namespace Hammock.Retries
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public abstract class RetryCustomCondition<T> : 
+	public abstract class RetryCustomCondition<T> : 
         IRetryCustomCondition,
         IRetryCondition<T>
     {

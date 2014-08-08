@@ -20,13 +20,13 @@ using Hammock.Web;
 using Hammock.Streaming;
 using Hammock.Web.Mocks;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
 #endif
 
 namespace Hammock
 {
-#if !Silverlight
+#if !Silverlight && !WINRT
     [Serializable]
 #endif
     public class RestClient : RestBase, IRestClient
@@ -61,7 +61,7 @@ namespace Hammock
             }
         }
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
         public virtual bool HasElevatedPermissions { get; set; }
         /// <summary>
         /// Used to set the name of the "Accept" header used by your Silverlight proxy.
@@ -74,7 +74,7 @@ namespace Hammock
         public virtual string SilverlightUserAgentHeader { get; set;}
 #endif
 
-#if !Silverlight
+#if !Silverlight && !WINRT
         private bool _firstTry = true;
 #endif
         private int _remainingRetries;
@@ -85,7 +85,7 @@ namespace Hammock
 
         private readonly Dictionary<RestRequest, TimedTask> _tasks = new Dictionary<RestRequest, TimedTask>();
 
-#if !Silverlight
+#if !Silverlight && !WINRT
 
 #if NET40
         public RestResponse<dynamic> RequestDynamic(RestRequest request)
@@ -338,10 +338,13 @@ namespace Hammock
 
                 // Invoke the retry predicate and pass the evaluator
                 var p = condition.GetValue("RetryIf");
+#if !WINRT
                 var r = p.GetType().InvokeMember("Invoke",
                     BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.Instance,
                     null, p, new[] { t });
-
+#else
+                var r = p.GetType().GetTypeInfo().GetDeclaredMethod("Invoke").Invoke(p, new[] { t });
+#endif
                 retry |= (bool)r;
             }
 
@@ -560,7 +563,7 @@ namespace Hammock
             return encoding;
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         private bool GetFollowRedirects(RestBase request)
         {
             var redirects = request.FollowRedirects ?? FollowRedirects ?? false;
@@ -1116,7 +1119,7 @@ namespace Hammock
             var streamOptions = GetStreamOptions(request);
             if (streamOptions != null)
             {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
                 query.KeepAlive = true;
 #endif
                 var duration = streamOptions.Duration.HasValue
@@ -1346,7 +1349,7 @@ namespace Hammock
             var streamOptions = GetStreamOptions(request);
             if (streamOptions != null)
             {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
                 query.KeepAlive = true;
 #endif
 
@@ -2031,7 +2034,10 @@ namespace Hammock
             }
 
             TimedTask task;
-#if !NETCF
+#if WINRT
+						if (!taskOptions.GetType().GetTypeInfo().IsGenericType)
+						{
+#elif !NETCF
             if (!taskOptions.GetType().IsGenericType)
             {
 #endif
@@ -2094,7 +2100,10 @@ namespace Hammock
             }
 
             TimedTask task;
-#if !NETCF
+#if WINRT
+						if (!taskOptions.GetType().GetTypeInfo().IsGenericType)
+						{
+#elif !NETCF
             if (!taskOptions.GetType().IsGenericType)
             {
 #endif
@@ -2498,7 +2507,7 @@ namespace Hammock
                         // [DC] WebResponse could be null, i.e. when streaming
                         return response;
                     }
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
                     response.Headers = result.WebResponse.Headers;
 #else
                     response.Headers = new NameValueCollection();
@@ -2621,7 +2630,7 @@ namespace Hammock
             query.PostContent = GetPostContent(request);
             query.Encoding = GetEncoding(request);
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
             query.FollowRedirects = GetFollowRedirects(request);
 #endif
             query.Entity = SerializeEntityBody(request);

@@ -3,10 +3,10 @@ using System.Threading;
 
 namespace Hammock.Web
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class WebQueryAsyncResult : IAsyncResult, IDisposable
+	public class WebQueryAsyncResult : IAsyncResult, IDisposable
     {
         public virtual bool IsCompleted { get; protected internal set; }
         public virtual WaitHandle AsyncWaitHandle { get; protected internal set; }
@@ -16,10 +16,10 @@ namespace Hammock.Web
         public virtual IAsyncResult InnerResult { get; set; }
         public virtual object Tag { get; set; }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
         [NonSerialized]
 #endif
-        private AutoResetEvent _block;
+				private AutoResetEvent _block;
 
         public WebQueryAsyncResult()
         {

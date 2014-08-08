@@ -10,10 +10,10 @@ using Hammock.Silverlight.Compat;
 
 namespace Hammock
 {
-#if !Silverlight
+#if !Silverlight && !WINRT
     [Serializable]
 #endif
-    public class RestRequest : RestBase
+	public class RestRequest : RestBase
     {
         private object _entity;
         private object _expectEntity;

@@ -3,9 +3,14 @@ using System.Diagnostics;
 using System.Threading;
 using Hammock.Web;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
 #endif
+
+#if WINRT
+using Hammock.WinRT.Compat;
+#endif
+
 namespace Hammock.Tasks
 {
     public class TimedTask : ITimedTask
@@ -142,10 +147,10 @@ namespace Hammock.Tasks
         }
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class TimedTask<T> : TimedTask, ITimedTask<T>
+		public class TimedTask<T> : TimedTask, ITimedTask<T>
     {
         public TimedTask(TimeSpan due,
                          TimeSpan interval,

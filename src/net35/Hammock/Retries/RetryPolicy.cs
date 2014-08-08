@@ -5,10 +5,10 @@ using Hammock.Extensions;
 
 namespace Hammock.Retries
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class RetryPolicy
+	public class RetryPolicy
     {
         public virtual ICollection<IRetryCondition> RetryConditions { get; set; }
         

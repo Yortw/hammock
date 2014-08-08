@@ -2,10 +2,10 @@
 
 namespace Hammock.Tasks
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class TaskState : IRetryState
+	public class TaskState : IRetryState
     {
         #region ITaskState Members
 

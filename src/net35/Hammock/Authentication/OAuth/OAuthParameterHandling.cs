@@ -3,10 +3,10 @@ using System.Runtime.Serialization;
 
 namespace Hammock.Authentication.OAuth
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public enum OAuthParameterHandling
+	public enum OAuthParameterHandling
     {
 #if !SILVERLIGHT && !Smartphone && !ClientProfiles && !NET20 && !MonoTouch && !NETCF
         [EnumMember] HttpAuthorizationHeader,
@@ -17,7 +17,7 @@ namespace Hammock.Authentication.OAuth
 #endif
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
     public enum OAuthSignatureTreatment

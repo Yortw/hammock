@@ -8,10 +8,10 @@ using System.Runtime.Serialization.Json;
 
 namespace Hammock.Serialization
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class HammockDataContractJsonSerializer : Utf8Serializer, ISerializer, IDeserializer
+	public class HammockDataContractJsonSerializer : Utf8Serializer, ISerializer, IDeserializer
     {
         private readonly Dictionary<RuntimeTypeHandle, DataContractJsonSerializer> _serializers =
             new Dictionary<RuntimeTypeHandle, DataContractJsonSerializer>();

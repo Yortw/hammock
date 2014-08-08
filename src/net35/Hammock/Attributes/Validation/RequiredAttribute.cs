@@ -4,10 +4,10 @@ using Hammock.Validation;
 
 namespace Hammock.Attributes.Validation
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public class RequiredAttribute : ValidationAttribute
+	public class RequiredAttribute : ValidationAttribute
     {
         public override string TransformValue(System.Reflection.PropertyInfo property, object value)
         {

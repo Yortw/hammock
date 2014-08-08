@@ -3,10 +3,10 @@ using System.Runtime.Serialization;
 
 namespace Hammock.Caching
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !WINRT
     [Serializable]
 #endif
-    public enum CacheMode
+	public enum CacheMode
     {
 #if !SILVERLIGHT && !Smartphone && !ClientProfiles && !NET20 && !MonoTouch && !NETCF
         [EnumMember] NoExpiration,

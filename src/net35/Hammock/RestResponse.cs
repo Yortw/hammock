@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using Hammock.Extensions;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
 using Hammock.Silverlight.Compat;
 #else
 using System.Collections.Specialized;
@@ -11,10 +11,10 @@ using System.Collections.Specialized;
 
 namespace Hammock
 {
-#if !Silverlight
+#if !Silverlight && !WINRT
     [Serializable]
 #endif
-    public class RestResponseBase : IDisposable
+	public class RestResponseBase : IDisposable
     {
         private string _content;
         public virtual string Content
@@ -156,7 +156,6 @@ namespace Hammock
 
             if (ContentStream != null)
             {
-                ContentStream.Close();
                 ContentStream.Dispose();
             }
 
@@ -176,7 +175,7 @@ namespace Hammock
             {
                 _stream = stream;
             }
-
+#if !WINRT
             public override IAsyncResult BeginRead(byte[] buffer, int offset, int count,
                                                    AsyncCallback callback, object state)
             {
@@ -188,8 +187,9 @@ namespace Hammock
             {
                 return _stream.BeginWrite(buffer, offset, count, callback, state);
             }
+#endif
 
-            public override bool CanRead
+						public override bool CanRead
             {
                 get { return _stream.CanRead; }
             }
@@ -203,13 +203,13 @@ namespace Hammock
             {
                 get { return _stream.CanWrite; }
             }
-
+#if !WINRT
             public override void Close()
             {
                 _stream.Flush();
             }
 
-            public override int EndRead(IAsyncResult asyncResult)
+						public override int EndRead(IAsyncResult asyncResult)
             {
                 return _stream.EndRead(asyncResult);
             }
@@ -218,6 +218,7 @@ namespace Hammock
             {
                 _stream.EndWrite(asyncResult);
             }
+#endif
 
             public override void Flush()
             {
@@ -298,15 +299,15 @@ namespace Hammock
         }
     }
 
-#if !Silverlight
+#if !Silverlight && !WINRT
     [Serializable]
 #endif
-    public class RestResponse : RestResponseBase
+		public class RestResponse : RestResponseBase
     {
         public virtual object ContentEntity { get; set; }
     }
 
-#if !Silverlight
+#if !Silverlight && !WINRT
     [Serializable]
 #endif
     public class RestResponse<T> : RestResponseBase
@@ -314,5 +315,3 @@ namespace Hammock
         public virtual T ContentEntity { get; set; }
     }
 }
-
-
