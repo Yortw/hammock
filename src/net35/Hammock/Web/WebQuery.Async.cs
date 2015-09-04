@@ -374,10 +374,27 @@ namespace Hammock.Web
 								using (response)
                 {
                     WebResponse = response;
-                    
-                    ContentStream = response.GetResponseStream();
-                    
-                    if (store != null)
+
+#if WINRT
+					var stream = response.GetResponseStream();
+					if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+					{
+						var value = response.Headers[HttpRequestHeader.ContentEncoding].ToString();
+						if (!String.IsNullOrEmpty(value))
+						{
+							if (value.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
+								stream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
+							else if (value.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+								stream = new System.IO.Compression.DeflateStream(stream, System.IO.Compression.CompressionMode.Decompress);
+						}
+					}
+
+          ContentStream = stream;
+#else
+					ContentStream = response.GetResponseStream();
+#endif
+
+					if (store != null)
                     {
                         // No expiration specified
                         if (store is Pair<ICache, string>)
@@ -822,7 +839,7 @@ namespace Hammock.Web
                 // No expiration specified
                 if (asyncResult is Triplet<WebRequest, Triplet<Pair<string, IEnumerable<HttpPostParameter>>, ICache, string>, object>)
                 {
-                    #region No Expiration
+#region No Expiration
                     var cacheScheme = (Triplet<WebRequest, Triplet<Pair<string, IEnumerable<HttpPostParameter>>, ICache, string>, object>)asyncResult;
                     var cache = cacheScheme.Second.Second;
 
@@ -848,13 +865,13 @@ namespace Hammock.Web
                                     Second = null,
                                     Third = prefix
                                 };
-                    #endregion
+#endregion
                 }
                 else
                     // Absolute expiration specified
                     if (asyncResult is Triplet<WebRequest, Pair<Pair<string, IEnumerable<HttpPostParameter>>, Triplet<ICache, DateTime, string>>, object>)
                     {
-                        #region Absolute Expiration
+#region Absolute Expiration
                         var cacheScheme = (Triplet<WebRequest, Pair<Pair<string, IEnumerable<HttpPostParameter>>, Triplet<ICache, DateTime, string>>, object>)asyncResult;
                         var url = cacheScheme.First.RequestUri.ToString();
                         var cache = cacheScheme.Second.Second.First;
@@ -881,13 +898,13 @@ namespace Hammock.Web
                                         Second = expiry,
                                         Third = prefix
                                     };
-                        #endregion
+#endregion
                     }
                     else
                         // Sliding expiration specified
                         if (asyncResult is Triplet<WebRequest, Pair<Pair<string, IEnumerable<HttpPostParameter>>, Triplet<ICache, TimeSpan, string>>, object>)
                         {
-                            #region Sliding Expiration
+#region Sliding Expiration
                             var cacheScheme = (Triplet<WebRequest, Pair<Pair<string, IEnumerable<HttpPostParameter>>, Triplet<ICache, TimeSpan, string>>, object>)asyncResult;
                             var url = cacheScheme.First.RequestUri.ToString();
                             var cache = cacheScheme.Second.Second.First;
@@ -914,7 +931,7 @@ namespace Hammock.Web
                                             Second = expiry,
                                             Third = prefix
                                         };
-                            #endregion
+#endregion
                         }
                         else
                         {
@@ -1007,8 +1024,26 @@ namespace Hammock.Web
 #endif
                 WebResponse = response;
 
-                ContentStream = response.GetResponseStream();
-                if (state.Second != null)
+#if WINRT
+					var stream = response.GetResponseStream();
+					if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+					{
+						var value = response.Headers[HttpRequestHeader.ContentEncoding].ToString();
+						if (!String.IsNullOrEmpty(value))
+						{
+							if (value.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
+								stream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
+							else if (value.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+								stream = new System.IO.Compression.DeflateStream(stream, System.IO.Compression.CompressionMode.Decompress);
+						}
+					}
+
+          ContentStream = stream;
+#else
+				ContentStream = response.GetResponseStream();
+#endif
+
+				if (state.Second != null)
                 {
                     var cache = state.Second.First;
                     var expiry = state.Second.Second;
