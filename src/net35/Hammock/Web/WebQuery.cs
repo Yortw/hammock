@@ -823,9 +823,34 @@ namespace Hammock.Web
                 {
                     response = new GzipHttpWebResponse((HttpWebResponse)response);
                 }
+#elif WINRT
+					stream = response.GetResponseStream();
+					if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+					{
+						var value = response.Headers[HttpRequestHeader.ContentEncoding].ToString();
+						if (!String.IsNullOrEmpty(value))
+						{
+							if (value.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
+								stream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
+							else if (value.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+							{
+								//Read first two bytes which are part of zlib spec not deflate spec
+								//http://george.chiramattel.com/blog/2007/09/deflatestream-block-length-does-not-match.html
+								stream.ReadByte();
+								stream.ReadByte();
+								stream = new System.IO.Compression.DeflateStream(stream, System.IO.Compression.CompressionMode.Decompress);
+							}
+						}
+					}
+
+          ContentStream = stream;
+#else
+								ContentStream = response.GetResponseStream();
 #endif
+
                 WebResponse = response;
-                stream = WebResponse.GetResponseStream();
+								if (stream == null)
+									stream = WebResponse.GetResponseStream();
             }
             
             var args = new WebQueryResponseEventArgs(stream, exception);

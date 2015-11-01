@@ -385,7 +385,13 @@ namespace Hammock.Web
 							if (value.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
 								stream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
 							else if (value.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+							{
+								//Read first two bytes which are part of zlib spec not deflate spec
+								//http://george.chiramattel.com/blog/2007/09/deflatestream-block-length-does-not-match.html
+								stream.ReadByte();
+								stream.ReadByte();
 								stream = new System.IO.Compression.DeflateStream(stream, System.IO.Compression.CompressionMode.Decompress);
+							}
 						}
 					}
 
@@ -559,7 +565,28 @@ namespace Hammock.Web
 
         private void StreamImpl(out Stream stream, WebRequest request, WebResponse response)
         {
-            using (stream = response.GetResponseStream())
+					var responseStream = response.GetResponseStream();
+
+#if WINRT
+					if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+					{
+						var value = response.Headers[HttpRequestHeader.ContentEncoding].ToString();
+						if (!String.IsNullOrEmpty(value))
+						{
+							if (value.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
+								responseStream = new System.IO.Compression.GZipStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+							else if (value.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+							{
+								//Read first two bytes which are part of zlib spec not deflate spec
+								//http://george.chiramattel.com/blog/2007/09/deflatestream-block-length-does-not-match.html
+								responseStream.ReadByte();
+								responseStream.ReadByte();
+								responseStream = new System.IO.Compression.DeflateStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+							}
+						}
+					}
+#endif
+					using (stream = responseStream)
             {
                 if (stream == null)
                 {
@@ -1034,7 +1061,13 @@ namespace Hammock.Web
 							if (value.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
 								stream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
 							else if (value.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+							{
+								//Read first two bytes which are part of zlib spec not deflate spec
+								//http://george.chiramattel.com/blog/2007/09/deflatestream-block-length-does-not-match.html
+								stream.ReadByte();
+								stream.ReadByte();
 								stream = new System.IO.Compression.DeflateStream(stream, System.IO.Compression.CompressionMode.Decompress);
+							}
 						}
 					}
 

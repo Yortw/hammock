@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Hammock.Silverlight.Compat
@@ -17,7 +18,7 @@ namespace Hammock.Silverlight.Compat
         {
             get
             {
-                return this.SingleOrDefault(kv => kv.Key.Equals(name)).Value;
+                return this.SingleOrDefault(kv => String.Compare(kv.Key, name, System.StringComparison.OrdinalIgnoreCase) == 0).Value;
             }
         }
 
