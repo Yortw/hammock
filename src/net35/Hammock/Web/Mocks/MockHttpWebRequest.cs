@@ -20,7 +20,7 @@ namespace Hammock.Web.Mocks
         
         public virtual string Content { get; set; }
 
-#if WindowsPhone || WINRT
+#if WINRT
         public long ContentLength { get; set; }
 #else 
         public override long ContentLength { get; set; }
