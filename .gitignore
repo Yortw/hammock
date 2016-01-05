@@ -37,3 +37,4 @@ TestResults
 src/net40/Hammock.Tests/app.config
 $SSH_ENV
 /src/UpgradeLog.htm
+LinqBridge.dll
