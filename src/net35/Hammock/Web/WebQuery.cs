@@ -1233,13 +1233,14 @@ namespace Hammock.Web
 
 				private static int Write(bool write, Encoding encoding, Stream requestStream, string input)
         {
-            var dataBytes = encoding.GetBytes(input);
             if(write)
             {
-                requestStream.Write(dataBytes, 0, dataBytes.Length);
+							var dataBytes = encoding.GetBytes(input);
+							requestStream.Write(dataBytes, 0, dataBytes.Length);
+							return dataBytes.Length;
             }
-            return dataBytes.Length;
-        }
+						return encoding.GetByteCount(input);
+				}
 
 				private static readonly byte[] NewLineBytes = new byte[] { 13, 10 };
 				private static int WriteLine(bool write, Encoding encoding, Stream requestStream, string input)
