@@ -209,9 +209,9 @@ namespace Hammock
         private bool RequestMultiPart(RestBase request, WebQuery query, string url, out WebException exception)
         {
             var parameters = GetPostParameters(request);
-            if (parameters == null || parameters.Count() == 0)
-            {
-                exception = null;
+						if (parameters == null || !parameters.Any())
+						{
+								exception = null;
                 return false;
             }
 
