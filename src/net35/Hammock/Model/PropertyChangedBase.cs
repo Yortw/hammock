@@ -21,7 +21,7 @@ namespace Hammock.Model
 
         #endregion
 
-        public virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
