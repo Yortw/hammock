@@ -1127,6 +1127,11 @@ namespace Hammock.Web
             exception = null;
             byte[] post;
             var request = BuildPostOrPutWebRequest(method, url, out post);
+						if ((post?.Length ?? 0) == 0 && this.PostContent != null)
+						{
+							post = this.PostContent;
+							request.ContentLength = post.Length;
+						}
 
             var requestArgs = new WebQueryRequestEventArgs(url);
             OnQueryRequest(requestArgs);
@@ -1231,30 +1236,32 @@ namespace Hammock.Web
         }
 #endif
 
-				private static int Write(bool write, Encoding encoding, Stream requestStream, string input)
-        {
-            var dataBytes = encoding.GetBytes(input);
-            if(write)
-            {
-                requestStream.Write(dataBytes, 0, dataBytes.Length);
-            }
-            return dataBytes.Length;
-        }
+		private static int Write(bool write, Encoding encoding, Stream requestStream, string input)
+		{
+			if (write)
+			{
+				var dataBytes = encoding.GetBytes(input);
+				requestStream.Write(dataBytes, 0, dataBytes.Length);
+				return dataBytes.Length;
+			}
+			return encoding.GetByteCount(input);
+		}
 
-        private static int WriteLine(bool write, Encoding encoding, Stream requestStream, string input)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine(input);
+		private static readonly byte[] NewLineBytes = new byte[] { 13, 10 };
+		private static int WriteLine(bool write, Encoding encoding, Stream requestStream, string input)
+		{
+			if (write)
+			{
+				var dataBytes = encoding.GetBytes(input);
+				requestStream.Write(dataBytes, 0, dataBytes.Length);
+				requestStream.Write(NewLineBytes, 0, NewLineBytes.Length);
+				return dataBytes.Length + NewLineBytes.Length;
+			}
 
-            var dataBytes = encoding.GetBytes(sb.ToString());
-            if (write)
-            {
-                requestStream.Write(dataBytes, 0, dataBytes.Length);
-            }
-            return dataBytes.Length;
-        }
+			return encoding.GetByteCount(input) + NewLineBytes.Length;
+		}
 
-        private long WriteMultiPartImpl(bool write, IEnumerable<HttpPostParameter> parameters, string boundary, Encoding encoding, Stream requestStream)
+		private long WriteMultiPartImpl(bool write, IEnumerable<HttpPostParameter> parameters, string boundary, Encoding encoding, Stream requestStream)
         {
             Stream fs = null;
             var header = string.Format("--{0}", boundary);

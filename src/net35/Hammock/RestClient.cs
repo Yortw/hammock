@@ -209,7 +209,7 @@ namespace Hammock
         private bool RequestMultiPart(RestBase request, WebQuery query, string url, out WebException exception)
         {
             var parameters = GetPostParameters(request);
-            if (parameters == null || parameters.Count() == 0)
+            if (parameters == null || !parameters.Any())
             {
                 exception = null;
                 return false;
@@ -2613,10 +2613,10 @@ namespace Hammock
 #pragma warning disable 618
             CoalesceWebPairsIntoCollection(query.Cookies, Cookies, request.Cookies);
 #pragma warning restore 618
-
+						
 #if !NETCF
-            // If CookieContainer is set on request object then use that, else use the CookieContainer set on the Client.
-            if (request.CookieContainer == null)
+						// If CookieContainer is set on request object then use that, else use the CookieContainer set on the Client.
+						if (request.CookieContainer == null)
                 request.CookieContainer = this.CookieContainer; 
 
             query.CookieContainer = request.CookieContainer;

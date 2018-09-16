@@ -48,12 +48,6 @@
     <TargetPlatform Include="Windows, Version=8.1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net35\Hammock.Silverlight\Compat\NameValueCollection.cs">
-      <Link>Compat\NameValueCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\net35\Hammock.Silverlight\Compat\Trace.cs">
-      <Link>Compat\Trace.cs</Link>
-    </Compile>
     <Compile Include="..\net35\Hammock\Attributes\INamedAttribute.cs">
       <Link>Attributes\INamedAttribute.cs</Link>
     </Compile>
@@ -390,6 +384,8 @@
     <Compile Include="Compat\DateTimeExtensions.cs" />
     <Compile Include="Compat\HashAlgorithim.cs" />
     <Compile Include="Compat\HMACSHA1.cs" />
+    <Compile Include="Compat\NameValueCollection.cs" />
+    <Compile Include="Compat\Trace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
