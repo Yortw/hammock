@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".NET 3.5", ".NET 3.5", "{0F12EB19-73E5-4F38-BEF2-070C625508B7}"
 EndProject
@@ -41,6 +41,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.SharpZipLib.WindowsPhone", "net40\ICSharpCode.SharpZipLib.WindowsPhone\ICSharpCode.SharpZipLib.WindowsPhone.csproj", "{BF04A546-D681-4F5A-AC41-CFC67CAEC66E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hammock.WinRT", "WinRT\Hammock.WinRT.csproj", "{40A91CEF-EFEA-4C9C-86F2-E3856BB82D04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hammock.NetStandard20", "NetStandard20\Hammock.NetStandard20.csproj", "{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -282,6 +284,30 @@ Global
 		{40A91CEF-EFEA-4C9C-86F2-E3856BB82D04}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{40A91CEF-EFEA-4C9C-86F2-E3856BB82D04}.Release|x86.ActiveCfg = Release|Any CPU
 		{40A91CEF-EFEA-4C9C-86F2-E3856BB82D04}.Release|x86.Build.0 = Release|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.ClientProfiles|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.ClientProfiles|Any CPU.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.ClientProfiles|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.ClientProfiles|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.ClientProfiles|x86.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.ClientProfiles|x86.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Debug|x86.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Mono|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Mono|Any CPU.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Mono|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Mono|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Mono|x86.ActiveCfg = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Mono|x86.Build.0 = Debug|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE9005F3-E3A6-4ECC-B033-FF05CA36A7F1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -297,5 +323,8 @@ Global
 		{CD029D13-5037-43A6-8CD9-5F12B00A7DE0} = {3FB92FF7-A9F8-4F15-864B-69E7EBC3E16B}
 		{5953279F-F478-4D5F-9906-03D56CE2DA2D} = {3FB92FF7-A9F8-4F15-864B-69E7EBC3E16B}
 		{BF04A546-D681-4F5A-AC41-CFC67CAEC66E} = {3FB92FF7-A9F8-4F15-864B-69E7EBC3E16B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6FA904C9-4A32-48EC-96EF-6BE2F8FC7844}
 	EndGlobalSection
 EndGlobal
