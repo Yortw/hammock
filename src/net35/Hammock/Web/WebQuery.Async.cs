@@ -1111,7 +1111,7 @@ namespace Hammock.Web
         {
             WebResponse = null;
 
-            byte[] content;
+            byte[] content = this.PostContent;
             var request = BuildPostOrPutWebRequest(method, url, out content);
 
             var state = new Triplet<WebRequest, byte[], object>

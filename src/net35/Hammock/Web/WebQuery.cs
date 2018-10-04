@@ -274,42 +274,45 @@ namespace Hammock.Web
         {
             return url => AppendParameters(url).Replace(url + "?", "");
         }
-        
-        protected virtual WebRequest BuildPostOrPutFormWebRequest(PostOrPut method, string url, out byte[] content)
-        {
-            var post = BeforeBuildPostOrPutFormWebRequest().Invoke(url);
 
-            var request = WebRequest.Create(url);
+		protected virtual WebRequest BuildPostOrPutFormWebRequest(PostOrPut method, string url, out byte[] content)
+		{
+			var post = BeforeBuildPostOrPutFormWebRequest().Invoke(url);
 
-            AuthenticateRequest(request);
+			var request = WebRequest.Create(url);
 
-            SetMethod(method.ToString(), request);
+			AuthenticateRequest(request);
 
-            // It should be possible to override the content type in the case of AddPostContent
+			SetMethod(method.ToString(), request);
+
+			// It should be possible to override the content type in the case of AddPostContent
 #if !WINRT
-            var hasContentType = Headers.AllKeys.Where(
-                key => key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase)
-                ).Count() > 0;
+			var hasContentType = Headers.AllKeys.Where(
+					key => key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase)
+					).Count() > 0;
 #else
 						var hasContentType = Headers.AllKeys.Where(
 								key => key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase)
 								).Count() > 0;
 #endif
-  
-            if(!hasContentType)
-            {
-                request.ContentType = "application/x-www-form-urlencoded";
-            }
 
-            HandleRequestMeta(request);
-			
+			if (!hasContentType)
+			{
+				request.ContentType = "application/x-www-form-urlencoded";
+			}
+
+			HandleRequestMeta(request);
+
 #if !MonoTouch
-            TraceRequest(request);
+			TraceRequest(request);
 #endif
-            content = BuildPostOrPutContent(request, post);
+			if (PostContent == null || PostContent.Length == 0)
+				content = BuildPostOrPutContent(request, post);
+			else
+				content = PostContent;
 
 #if !SILVERLIGHT && !WINRT
-            request.ContentLength = content.Length;
+			request.ContentLength = content?.Length ?? 0;
 #endif
 						return request;
         }
